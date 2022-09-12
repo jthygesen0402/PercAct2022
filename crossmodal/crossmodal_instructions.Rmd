@@ -33,7 +33,8 @@ First of all, you need to download the data from the Google drive folder: **http
 ### Load data
 Load in the data.
 ```{r}
-
+df_aud <- read_bulk(directory = "data_aud/", fun=read_csv)
+df_vis <- read_bulk(directory = "data_vis/", fun=read_csv)
 ```
 
 Hint: you can use read_bulk() from the readbulk package to load the different csv files into one dataframe (one df for vision, one for audition). 
@@ -50,25 +51,47 @@ To begin with try to get an overview of the data by answering the following ques
 
 What variables do we have? 
 ```{r}
-
+colnames(df_aud)
 ```
 
 Which variables are we interested in? 
+rt, stimulus (sound pitch, size of shape), key pressed, congruency, trial_index, subject, acurracy
+
 
 Are the variables in the right format (e.g., factor, numeric)? If they are not, make sure they are.
 ```{r}
+# AUDITION 
+df_aud <- df_aud %>% 
+  mutate(
+    accuracy = as.factor(accuracy),
+    congruency = as.factor(congruency),
+    subject = as.factor(subject),
+    key_press= as.factor(key_press),
+    size=as.factor(size),
+)
 
+# VISION
+df_vis <- df_vis %>% 
+  mutate(
+    accuracy = as.factor(accuracy),
+    congruency = as.factor(congruency),
+    subject = as.factor(subject),
+    key_press= as.factor(key_press),
+    size=as.factor(size),
+)
 ```
 
 How many participants do we have in each condition?
 ```{r}
-
+str(df_aud$subject)
+str(df_vis$subject)
 ```
 
 
 Create new dataframes that only contains the correct trials. The dataframes with both correct and incorrect trials will be used in the last part of the exercise, so do not overwrite this. 
 ```{r}
-
+df_aud_cor <- filter(df_aud, accuracy=TRUE)
+?select
 ```
 
 
