@@ -19,15 +19,20 @@ Call me for help whenever you get stuck (or take a quick look in the solutions f
 pacman::p_load(mousetrap, tidyverse)
 
 # loading in data
-d <- read_csv('Mousetracking_experiment/subject-3.csv')
+d <- list.files(path = "./Mousetracking_experiment/data/", pattern = "*.csv", full.names = T) %>% 
+  map_df(~read_csv(.))
 
-d <- d %>% mutate(correct_figure = ifelse(correct_button=="left_button", left_figure,right_figure))
-d <- d %>% mutate(congruent= ifelse(correct_figure=="kiki"& sound=="A7"|correct_figure=="bouba"& sound=="A1", "congruent","incongruent"))
+d <- d %>% mutate(correct_figure = ifelse(correct_button=="left_button", left_figure,right_figure)) %>% 
+  mutate(congruent= ifelse(correct_figure=="kiki"& sound=="A7"|correct_figure=="bouba"& sound=="A1", "congruent","incongruent")) %>% 
+  filter(subject_nr!=5)
+
+d5 <- d %>% filter(subject_nr == 5) %>% filter(count_logger==1)
 ```
 
 ### Turn the data into a mousetrap object
 ```{r}
 m <- mt_import_mousetrap(d)
+m5 <- mt_import_mousetrap(d5)
 ```
 Take a moment to look at the structure that it created. What are the elements, what information does it provide?
 
@@ -44,7 +49,7 @@ mt_plot(data = m, use = 'trajectories')
 ### Make a plot in which the lines are coloured by condition
 The demo-experiment had different trial types for which we have different predictions. Make a plot that distinguishes these two conditions, e.g. by different colors. 
 ```{r}
-mt_plot(m, color = 'congruent')
+mt_plot(m, color = 'congruent', alpha = 0.3)
 ```
 
 
@@ -62,8 +67,8 @@ m <- mt_remap_symmetric(
 mt_plot(
   m, 
   use = 'trajectories',
-  color = 'congruent'
-  )
+  color = 'congruent',
+  alpha = 0.4)
 
 # turns the data upside down, so it resembles the actual mouse tracking task
 ```
@@ -169,7 +174,7 @@ mt_measures_ag <- mt_aggregate(
   m,
   use = 'measures',
   use_variables = c('MAD', 'xpos_flips','AUC', 'RT'), # if you want all of the measures, exclude this line
-  use2_variables = 'trial_type'
+  use2_variables = 'congruent'
   )
 
 mt_measures_ag
