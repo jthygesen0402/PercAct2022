@@ -19,7 +19,10 @@ Call me for help whenever you get stuck (or take a quick look in the solutions f
 pacman::p_load(mousetrap, tidyverse)
 
 # loading in data
-d <- read_csv('example_data/subject-3.csv')
+d <- read_csv('Mousetracking_experiment/subject-3.csv')
+
+d <- d %>% mutate(correct_figure = ifelse(correct_button=="left_button", left_figure,right_figure))
+d <- d %>% mutate(congruent= ifelse(correct_figure=="kiki"& sound=="A7"|correct_figure=="bouba"& sound=="A1", "congruent","incongruent"))
 ```
 
 ### Turn the data into a mousetrap object
@@ -41,7 +44,7 @@ mt_plot(data = m, use = 'trajectories')
 ### Make a plot in which the lines are coloured by condition
 The demo-experiment had different trial types for which we have different predictions. Make a plot that distinguishes these two conditions, e.g. by different colors. 
 ```{r}
-mt_plot(m, color = 'trial_type')
+mt_plot(m, color = 'congruent')
 ```
 
 
@@ -59,7 +62,7 @@ m <- mt_remap_symmetric(
 mt_plot(
   m, 
   use = 'trajectories',
-  color = 'trial_type'
+  color = 'congruent'
   )
 
 # turns the data upside down, so it resembles the actual mouse tracking task
@@ -73,7 +76,7 @@ mt_plot(
   x = 'timestamps', # modifying the x-axis to plot timestamps
   y = 'xpos',       # modifying the y-axis to plot the xpos
   use = 'trajectories',
-  color = 'trial_type' 
+  color = 'congruent' 
 )
 ```
 
@@ -91,7 +94,7 @@ mt_plot(
   x = 'timestamps', # modifying the x-axis to plot timestamps
   y = 'xpos',       # modifying the y-axis to plot the xpos
   use = 'trajectories',
-  color = 'trial_type' 
+  color = 'congruent' 
 )
 ```
 
@@ -111,7 +114,7 @@ Find out how to plot the normalized trajectories instead of the raw data.
 mt_plot(
   m, 
   use = 'tn_trajectories',
-  color = 'trial_type'
+  color = 'congruent'
 )
 ```
 
@@ -128,7 +131,7 @@ m_tn <- mt_time_normalize(
 mt_plot(
   m_tn, 
   use = 'tn_trajectories',
-  color = 'trial_type'
+  color = 'congruent'
 )
 ```
 
@@ -140,13 +143,13 @@ Think: Which trajectories do we need to use, the original or the time normalized
 mt_plot_aggregate(
   m, 
   use = 'trajectories',
-  color = 'trial_type'
+  color = 'congruent'
 )
 
 mt_plot_aggregate(
   m, 
   use = 'tn_trajectories',
-  color = 'trial_type'
+  color = 'congruent'
 ) + 
   labs(
     title = 'Aggregated time-normalized mouse trajectories')
